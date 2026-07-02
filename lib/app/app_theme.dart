@@ -1,0 +1,27 @@
+import 'package:flutter/material.dart';
+
+import '../core/constants/app_colors.dart';
+
+class AppTheme {
+  AppTheme._();
+
+  static ThemeData lightTheme = ThemeData(
+    useMaterial3: true,
+
+    scaffoldBackgroundColor: AppColors.background,
+
+    colorScheme: ColorScheme.fromSeed(
+      seedColor: AppColors.primary,
+      brightness: Brightness.light,
+    ),
+
+    appBarTheme: const AppBarTheme(
+      backgroundColor: AppColors.primary,
+      foregroundColor: Colors.white,
+      centerTitle: true,
+      elevation: 0,
+    ),
+
+    cardColor: AppColors.card,
+  );
+}
