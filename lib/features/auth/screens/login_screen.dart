@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+
 
 import '../../../core/constants/app_spacing.dart';
 import '../../../core/constants/app_strings.dart';
@@ -29,7 +31,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void login() {
     if (_formKey.currentState!.validate()) {
-      debugPrint("Login Clicked");
+      context.go('/dashboard');
     }
   }
 
@@ -94,7 +96,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
                 Center(
                   child: TextButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      context.go('/dashboard');
+                    },
                     child: const Text(AppStrings.continueAsGuest),
                   ),
                 ),
