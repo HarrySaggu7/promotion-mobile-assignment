@@ -1,7 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
 import 'app/app.dart';
+import 'features/products/providers/product_provider.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(const EmaApp());
+
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (_) => ProductProvider(),
+        ),
+      ],
+      child: const EmaApp(),
+    ),
+  );
 }
