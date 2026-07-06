@@ -1,9 +1,10 @@
 import 'package:ema_mobile/features/auth/screens/login_screen.dart';
 import 'package:ema_mobile/features/dashboard/screens/dashboard_screen.dart';
+import 'package:ema_mobile/features/products/models/product_model.dart';
+import 'package:ema_mobile/features/products/screens/product_detail_screen.dart';
 import 'package:go_router/go_router.dart';
 
 final GoRouter appRouter = GoRouter(
-  debugLogDiagnostics: true,
   initialLocation: '/',
   routes: [
     GoRoute(
@@ -13,6 +14,16 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: '/dashboard',
       builder: (context, state) => const DashboardScreen(),
+    ),
+    GoRoute(
+      path: '/product',
+      builder: (context, state) {
+        final product = state.extra as ProductModel;
+
+        return ProductDetailScreen(
+          product: product,
+        );
+      },
     ),
   ],
 );

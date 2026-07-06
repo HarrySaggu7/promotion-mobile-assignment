@@ -2,7 +2,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 import '../../../core/constants/app_colors.dart';
-import '../../../core/constants/app_spacing.dart';
 import '../models/product_model.dart';
 
 class ProductCard extends StatelessWidget {
@@ -38,19 +37,22 @@ class ProductCard extends StatelessWidget {
                 width: double.infinity,
                 color: Colors.white,
                 padding: const EdgeInsets.all(16),
-                child: CachedNetworkImage(
-                  imageUrl: product.image,
-                  fit: BoxFit.contain,
-                  placeholder: (_, __) => const Center(
-                    child: SizedBox(
-                      height: 24,
-                      width: 24,
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    ),
-                  ),
-                  errorWidget: (_, __, ___) =>
-                      const Icon(Icons.broken_image, size: 40),
-                ),
+                child: Hero(
+  tag: 'product_${product.id}',
+  child: CachedNetworkImage(
+    imageUrl: product.image,
+    fit: BoxFit.contain,
+    placeholder: (context, url) => const Center(
+      child: SizedBox(
+        width: 24,
+        height: 24,
+        child: CircularProgressIndicator(strokeWidth: 2),
+      ),
+    ),
+    errorWidget: (context, url, error) =>
+        const Icon(Icons.broken_image),
+  ),
+),
               ),
             ),
 

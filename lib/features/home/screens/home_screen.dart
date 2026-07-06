@@ -6,6 +6,7 @@ import '../../../core/constants/app_spacing.dart';
 import '../../../core/constants/app_text_styles.dart';
 import '../../products/providers/product_provider.dart';
 import '../../products/widgets/product_card.dart';
+import 'package:go_router/go_router.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -174,20 +175,25 @@ class _HomeScreenState extends State<HomeScreen> {
   ),
   itemBuilder: (context, index) {
     return ProductCard(
-      product: productProvider.products[index],
-      onTap: () {
-        // We'll implement navigation next
-      },
-      onAddToCart: () {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              '${productProvider.products[index].title} added to cart',
-            ),
-          ),
-        );
-      },
+  product: productProvider.products[index],
+
+  onTap: () {
+    context.push(
+      '/product',
+      extra: productProvider.products[index],
     );
+  },
+
+  onAddToCart: () {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          '${productProvider.products[index].title} added to cart',
+        ),
+      ),
+    );
+  },
+);
   },
 ),
             ],
@@ -213,7 +219,7 @@ class _CategoryItem extends StatelessWidget {
       children: [
         CircleAvatar(
           radius: 28,
-          backgroundColor: AppColors.primary.withOpacity(0.1),
+          backgroundColor: AppColors.primary.withValues(alpha: 0.1),
           child: Icon(
             icon,
             color: AppColors.primary,
