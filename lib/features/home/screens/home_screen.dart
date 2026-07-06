@@ -162,18 +162,34 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 )
               else
-                ListView.separated(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: productProvider.products.length,
-                  separatorBuilder: (_, __) =>
-                      const SizedBox(height: AppSpacing.md),
-                  itemBuilder: (context, index) {
-                    return ProductCard(
-                      product: productProvider.products[index],
-                    );
-                  },
-                ),
+                GridView.builder(
+  shrinkWrap: true,
+  physics: const NeverScrollableScrollPhysics(),
+  itemCount: productProvider.products.length,
+  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+    crossAxisCount: 2,
+    crossAxisSpacing: 16,
+    mainAxisSpacing: 16,
+    childAspectRatio: 0.52,
+  ),
+  itemBuilder: (context, index) {
+    return ProductCard(
+      product: productProvider.products[index],
+      onTap: () {
+        // We'll implement navigation next
+      },
+      onAddToCart: () {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              '${productProvider.products[index].title} added to cart',
+            ),
+          ),
+        );
+      },
+    );
+  },
+),
             ],
           ),
         ),
