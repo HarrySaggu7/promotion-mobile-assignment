@@ -4,6 +4,7 @@ import '../../cart/screens/cart_screen.dart';
 import '../../home/screens/home_screen.dart';
 import '../../profile/screens/profile_screen.dart';
 import '../../store_locator/screens/store_locator_screen.dart';
+import '../../cart/screens/cart_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -16,11 +17,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
   int _currentIndex = 0;
 
   final List<Widget> _pages = const [
-    HomeScreen(),
-    CartScreen(),
-    StoreLocatorScreen(),
-    ProfileScreen(),
-  ];
+  HomeScreen(),
+  CartScreen(),
+  StoreLocatorScreen(),
+  ProfileScreen(),
+];
 
   @override
   Widget build(BuildContext context) {

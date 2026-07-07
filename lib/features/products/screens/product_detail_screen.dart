@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 
 import '../../../core/constants/app_colors.dart';
 import '../models/product_model.dart';
+import 'package:provider/provider.dart';
+import '../../cart/providers/cart_provider.dart';
 
 class ProductDetailScreen extends StatelessWidget {
   final ProductModel product;
@@ -121,12 +123,15 @@ class ProductDetailScreen extends StatelessWidget {
               height: 55,
               child: FilledButton.icon(
                 onPressed: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text('${product.title} added to cart'),
-                    ),
-                  );
-                },
+  context.read<CartProvider>().addToCart(product);
+
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      content: Text('${product.title} added to cart'),
+      duration: const Duration(seconds: 2),
+    ),
+  );
+},
                 icon: const Icon(Icons.shopping_cart),
                 label: const Text(
                   'Add To Cart',
