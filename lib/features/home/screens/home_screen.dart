@@ -7,6 +7,7 @@ import '../../../core/constants/app_spacing.dart';
 import '../../../core/constants/app_text_styles.dart';
 import '../../products/providers/product_provider.dart';
 import '../../products/widgets/product_card.dart';
+import '../../cart/providers/cart_provider.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -23,11 +24,16 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-  final provider = context.read<ProductProvider>();
+  final productProvider = context.read<ProductProvider>();
+  final cartProvider = context.read<CartProvider>();
 
-  if (!provider.hasProducts) {
-    await provider.fetchProducts();
+  if (!productProvider.hasProducts) {
+    await productProvider.fetchProducts();
   }
+
+  cartProvider.restoreCart(
+    productProvider.products,
+  );
 });
   }
 

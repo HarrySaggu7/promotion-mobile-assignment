@@ -14,7 +14,7 @@ class ProductProvider extends ChangeNotifier {
 
   List<ProductModel> get products => _products;
 
-  bool get hasProducts => _products.isNotEmpty;
+bool get hasProducts => _allProducts.isNotEmpty;
 
   Future<void> fetchProducts() async {
     isLoading = true;

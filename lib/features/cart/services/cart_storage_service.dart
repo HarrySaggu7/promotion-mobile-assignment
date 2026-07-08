@@ -1,42 +1,39 @@
+import 'package:hive/hive.dart';
+
 import '../../../core/storage/hive_service.dart';
 
 class CartStorageService {
   CartStorageService._();
 
-  static const String cartKey = 'cart_items';
+  static const String _cartKey = 'cart';
 
   static Future<void> saveCart(
-      Map<int, int> cartData,
-      ) async {
-    final box = HiveService.getCartBox();
+    List<Map<String, dynamic>> items,
+  ) async {
+    final Box box = HiveService.getCartBox();
 
-    final data = cartData.entries
-        .map(
-          (e) => {
-        'productId': e.key,
-        'quantity': e.value,
-      },
-    )
-        .toList();
-
-    await box.put(cartKey, data);
+    await box.put(_cartKey, items);
   }
 
   static List<Map<String, dynamic>> loadCart() {
-    final box = HiveService.getCartBox();
+    final Box box = HiveService.getCartBox();
 
-    final data = box.get(cartKey);
+    final dynamic data = box.get(_cartKey);
 
-    if (data == null) return [];
+    if (data == null) {
+      return [];
+    }
 
-    return List<Map<String, dynamic>>.from(
-      data.map((e) => Map<String, dynamic>.from(e)),
-    );
+    return (data as List)
+        .map(
+          (e) => Map<String, dynamic>.from(e as Map),
+        )
+        .toList();
   }
 
   static Future<void> clearCart() async {
-    final box = HiveService.getCartBox();
+    final Box box = HiveService.getCartBox();
 
-    await box.delete(cartKey);
+    await box.delete(_cartKey);
   }
 }
