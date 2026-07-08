@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../../../core/constants/app_colors.dart';
 import '../providers/cart_provider.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class CartScreen extends StatelessWidget {
   const CartScreen({super.key});
@@ -33,12 +34,28 @@ class CartScreen extends StatelessWidget {
                           padding: const EdgeInsets.all(16),
                           child: Row(
                             children: [
-                              Image.network(
-                                item.product.image,
-                                width: 70,
-                                height: 70,
-                                fit: BoxFit.contain,
-                              ),
+                              SizedBox(
+  width: 70,
+  height: 70,
+  child: CachedNetworkImage(
+    imageUrl: item.product.image,
+    fit: BoxFit.contain,
+
+    placeholder: (context, url) => const Center(
+      child: SizedBox(
+        width: 20,
+        height: 20,
+        child: CircularProgressIndicator(strokeWidth: 2),
+      ),
+    ),
+
+    errorWidget: (context, url, error) => const Icon(
+      Icons.image_not_supported_outlined,
+      size: 40,
+      color: Colors.grey,
+    ),
+  ),
+),
 
                               const SizedBox(width: 16),
 

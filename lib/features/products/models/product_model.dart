@@ -27,7 +27,23 @@ class ProductModel {
       description: json['description'] as String,
       category: json['category'] as String,
       image: json['image'] as String,
-      rating: RatingModel.fromJson(json['rating']),
+      rating: RatingModel.fromJson(
+  Map<String, dynamic>.from(
+    json['rating'] as Map,
+  ),
+),
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'title': title,
+      'price': price,
+      'description': description,
+      'category': category,
+      'image': image,
+      'rating': rating.toJson(),
+    };
   }
 }
