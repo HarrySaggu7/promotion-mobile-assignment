@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/constants/app_colors.dart';
@@ -6,7 +7,6 @@ import '../../../core/constants/app_spacing.dart';
 import '../../../core/constants/app_text_styles.dart';
 import '../../products/providers/product_provider.dart';
 import '../../products/widgets/product_card.dart';
-import 'package:go_router/go_router.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -16,13 +16,25 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final TextEditingController _searchController = TextEditingController();
+
   @override
   void initState() {
     super.initState();
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<ProductProvider>().fetchProducts();
-    });
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+  final provider = context.read<ProductProvider>();
+
+  if (!provider.hasProducts) {
+    await provider.fetchProducts();
+  }
+});
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
   }
 
   @override
@@ -52,20 +64,33 @@ class _HomeScreenState extends State<HomeScreen> {
                 'Hello, Guest 👋',
                 style: AppTextStyles.heading2,
               ),
-
               const SizedBox(height: 4),
-
               Text(
                 'Find your next great purchase',
                 style: AppTextStyles.caption,
               ),
-
               const SizedBox(height: AppSpacing.lg),
 
+              /// SEARCH BAR
               TextField(
+                controller: _searchController,
+                onChanged: (value) {
+                  productProvider.searchProducts(value);
+                  setState(() {});
+                },
                 decoration: InputDecoration(
                   hintText: 'Search products',
                   prefixIcon: const Icon(Icons.search),
+                  suffixIcon: _searchController.text.isNotEmpty
+                      ? IconButton(
+                          onPressed: () {
+                            _searchController.clear();
+                            productProvider.clearSearch();
+                            setState(() {});
+                          },
+                          icon: const Icon(Icons.clear),
+                        )
+                      : null,
                   filled: true,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(16),
@@ -76,6 +101,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
               const SizedBox(height: AppSpacing.lg),
 
+              /// BANNER
               Container(
                 width: double.infinity,
                 height: 150,
@@ -110,6 +136,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
               const SizedBox(height: AppSpacing.xl),
 
+              /// CATEGORIES
               Text(
                 'Categories',
                 style: AppTextStyles.heading2,
@@ -141,6 +168,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
               const SizedBox(height: AppSpacing.xl),
 
+              /// PRODUCTS
               Text(
                 'Featured Products',
                 style: AppTextStyles.heading2,
@@ -149,9 +177,9 @@ class _HomeScreenState extends State<HomeScreen> {
               const SizedBox(height: AppSpacing.md),
 
               if (productProvider.isLoading)
-                const Center(
-                  child: Padding(
-                    padding: EdgeInsets.all(32),
+                const Padding(
+                  padding: EdgeInsets.all(32),
+                  child: Center(
                     child: CircularProgressIndicator(),
                   ),
                 )
@@ -162,40 +190,68 @@ class _HomeScreenState extends State<HomeScreen> {
                     style: const TextStyle(color: Colors.red),
                   ),
                 )
+              else if (productProvider.products.isEmpty)
+                const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 60),
+                  child: Center(
+                    child: Column(
+                      children: [
+                        Icon(
+                          Icons.search_off,
+                          size: 70,
+                          color: Colors.grey,
+                        ),
+                        SizedBox(height: 16),
+                        Text(
+                          'No products found',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        SizedBox(height: 8),
+                        Text(
+                          'Try another search keyword.',
+                        ),
+                      ],
+                    ),
+                  ),
+                )
               else
                 GridView.builder(
-  shrinkWrap: true,
-  physics: const NeverScrollableScrollPhysics(),
-  itemCount: productProvider.products.length,
-  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-    crossAxisCount: 2,
-    crossAxisSpacing: 16,
-    mainAxisSpacing: 16,
-    childAspectRatio: 0.52,
-  ),
-  itemBuilder: (context, index) {
-    return ProductCard(
-  product: productProvider.products[index],
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: productProvider.products.length,
+                  gridDelegate:
+                      const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    crossAxisSpacing: 16,
+                    mainAxisSpacing: 16,
+                    childAspectRatio: 0.52,
+                  ),
+                  itemBuilder: (context, index) {
+                    final product = productProvider.products[index];
 
-  onTap: () {
-    context.push(
-      '/product',
-      extra: productProvider.products[index],
-    );
-  },
-
-  onAddToCart: () {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          '${productProvider.products[index].title} added to cart',
-        ),
-      ),
-    );
-  },
-);
-  },
-),
+                    return ProductCard(
+                      product: product,
+                      onTap: () {
+                        context.push(
+                          '/product',
+                          extra: product,
+                        );
+                      },
+                      onAddToCart: () {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              '${product.title} added to cart',
+                            ),
+                          ),
+                        );
+                      },
+                    );
+                  },
+                ),
             ],
           ),
         ),

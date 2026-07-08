@@ -1,5 +1,3 @@
-import 'package:hive/hive.dart';
-
 import '../../../core/storage/hive_service.dart';
 
 class CartStorageService {

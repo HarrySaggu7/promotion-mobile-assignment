@@ -8,7 +8,13 @@ class ProductProvider extends ChangeNotifier {
 
   bool isLoading = false;
   String? error;
-  List<ProductModel> products = [];
+
+  List<ProductModel> _allProducts = [];
+  List<ProductModel> _products = [];
+
+  List<ProductModel> get products => _products;
+
+  bool get hasProducts => _products.isNotEmpty;
 
   Future<void> fetchProducts() async {
     isLoading = true;
@@ -16,12 +22,34 @@ class ProductProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      products = await _repository.getProducts();
+      final data = await _repository.getProducts();
+
+      _allProducts = data;
+      _products = List.from(data);
     } catch (e) {
       error = e.toString();
     } finally {
       isLoading = false;
       notifyListeners();
     }
+  }
+
+  void searchProducts(String query) {
+    if (query.trim().isEmpty) {
+      _products = List.from(_allProducts);
+    } else {
+      final searchText = query.toLowerCase();
+
+      _products = _allProducts.where((product) {
+        return product.title.toLowerCase().contains(searchText);
+      }).toList();
+    }
+
+    notifyListeners();
+  }
+
+  void clearSearch() {
+    _products = List.from(_allProducts);
+    notifyListeners();
   }
 }
