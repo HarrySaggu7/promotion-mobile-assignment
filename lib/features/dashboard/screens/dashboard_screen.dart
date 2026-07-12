@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../cart/screens/cart_screen.dart';
 import '../../home/screens/home_screen.dart';
 import '../../profile/screens/profile_screen.dart';
-import '../../store_locator/screens/store_locator_screen.dart';
+import '../../store/screens/store_locator_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});

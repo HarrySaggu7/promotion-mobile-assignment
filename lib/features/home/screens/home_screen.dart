@@ -50,14 +50,42 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
-        title: const Text('EMA Store'),
-        actions: const [
-          Padding(
-            padding: EdgeInsets.only(right: 16),
-            child: Icon(Icons.shopping_cart_outlined),
+  title: const Text('EMA Store'),
+  actions: [
+    IconButton(
+      tooltip: 'Store Locator',
+      onPressed: () {
+        context.push('/stores');
+      },
+      icon: const Icon(Icons.location_on_outlined),
+    ),
+
+    Consumer<CartProvider>(
+      builder: (context, cartProvider, child) {
+        return Padding(
+          padding: const EdgeInsets.only(right: 8),
+          child: IconButton(
+            tooltip: 'Shopping Cart',
+            onPressed: () {
+              context.push('/cart');
+            },
+            icon: Badge(
+              backgroundColor: Colors.red,
+              textColor: Colors.white,
+              isLabelVisible: cartProvider.totalItems > 0,
+              label: Text(
+                cartProvider.totalItems.toString(),
+              ),
+              child: const Icon(
+                Icons.shopping_cart_outlined,
+              ),
+            ),
           ),
-        ],
-      ),
+        );
+      },
+    ),
+  ],
+),
       body: RefreshIndicator(
         onRefresh: () => productProvider.fetchProducts(),
         child: SingleChildScrollView(
@@ -239,23 +267,26 @@ class _HomeScreenState extends State<HomeScreen> {
                     final product = productProvider.products[index];
 
                     return ProductCard(
-                      product: product,
-                      onTap: () {
-                        context.push(
-                          '/product',
-                          extra: product,
-                        );
-                      },
-                      onAddToCart: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(
-                              '${product.title} added to cart',
-                            ),
-                          ),
-                        );
-                      },
-                    );
+  product: product,
+  onTap: () {
+    context.push(
+      '/product',
+      extra: product,
+    );
+  },
+  onAddToCart: () {
+    context.read<CartProvider>().addToCart(product);
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        duration: const Duration(seconds: 1),
+        content: Text(
+          '${product.title} added to cart',
+        ),
+      ),
+    );
+  },
+);
                   },
                 ),
             ],
